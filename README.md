@@ -48,6 +48,8 @@ nextwork/
 ## 🚀 Como Rodar Localmente
 
 📖 **GUIAS DISPONÍVEIS:**
+- ⭐ **[RODAR-LOCALMENTE.md](RODAR-LOCALMENTE.md)** - Banco já configurado! Rode em 2 comandos
+- 📊 **[STATUS-CONEXAO.md](STATUS-CONEXAO.md)** - Veja o status da sua conexão
 - 🚀 **[QUICKSTART.md](QUICKSTART.md)** - Instalação em 3 passos (< 10 min)
 - 🏗️ **[ARQUITETURA.md](ARQUITETURA.md)** - Entenda Frontend/Backend/Database
 - ✅ **[CHECKLIST.md](CHECKLIST.md)** - Verifique se tudo está funcionando
