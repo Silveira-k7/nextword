@@ -13,6 +13,7 @@ export function DashboardEmpresa() {
   const [negocios, setNegocios] = useState<Negocio[]>([]);
   const [consultorias, setConsultorias] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedConsultoria, setSelectedConsultoria] = useState<any>(null);
 
   useEffect(() => {
     loadData();
@@ -163,20 +164,34 @@ export function DashboardEmpresa() {
                     className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                   >
                     <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900">{consultoria.consultor?.nome}</h3>
-                      <p className="text-sm text-gray-600">{consultoria.consultor?.email}</p>
+                      <h3 className="font-semibold text-gray-900">{consultoria.consultor?.nome || 'Consultor'}</h3>
+                      <p className="text-sm text-gray-600">{consultoria.consultor?.email || 'Email não disponível'}</p>
                       {consultoria.descricao && (
-                        <p className="text-sm text-gray-500 mt-1 line-clamp-1">{consultoria.descricao}</p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          <span className="font-medium">Solicitação:</span> {consultoria.descricao}
+                        </p>
                       )}
+                      <p className="text-xs text-gray-400 mt-1">
+                        Status: {consultoria.status}
+                      </p>
                     </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleOpenChat(consultoria.id_consultoria)}
-                    >
-                      <MessageCircle className="w-4 h-4 mr-2" />
-                      Abrir Chat
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setSelectedConsultoria(consultoria)}
+                      >
+                        Ver Detalhes
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleOpenChat(consultoria.id_consultoria)}
+                      >
+                        <MessageCircle className="w-4 h-4 mr-2" />
+                        Abrir Chat
+                      </Button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -184,50 +199,100 @@ export function DashboardEmpresa() {
           </Card>
         )}
 
-        <div className="grid md:grid-cols-2 gap-6 mt-6">
-          <Card>
-            <CardHeader>
-              <h2 className="text-xl font-semibold">Ações Rápidas</h2>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <Link to="/buscar-consultoria" className="block">
+        <Card className="mt-6">
+          <CardHeader>
+            <h2 className="text-xl font-semibold">Ações Rápidas</h2>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-3 gap-3">
+              <Link to="/buscar-consultoria" className="block">
+                <Button variant="outline" className="w-full justify-start">
+                  <Users className="h-4 w-4 mr-2" />
+                  Buscar Consultoria
+                </Button>
+              </Link>
+              <Link to="/conteudo-educativo" className="block">
+                <Button variant="outline" className="w-full justify-start">
+                  <BarChart3 className="h-4 w-4 mr-2" />
+                  Conteúdo Educativo
+                </Button>
+              </Link>
+              {negocios.length > 0 && (
+                <Link to={`/negocio/${negocios[0].id_negocio}/roadmap`} className="block">
                   <Button variant="outline" className="w-full justify-start">
-                    <Users className="h-4 w-4 mr-2" />
-                    Buscar Consultoria
+                    <Map className="h-4 w-4 mr-2" />
+                    Ver Roadmap
                   </Button>
                 </Link>
-                <Link to="/conteudo-educativo" className="block">
-                  <Button variant="outline" className="w-full justify-start">
-                    <BarChart3 className="h-4 w-4 mr-2" />
-                    Conteúdo Educativo
-                  </Button>
-                </Link>
-                {negocios.length > 0 && (
-                  <Link to={`/negocio/${negocios[0].id_negocio}/roadmap`} className="block">
-                    <Button variant="outline" className="w-full justify-start">
-                      <Map className="h-4 w-4 mr-2" />
-                      Ver Roadmap
-                    </Button>
-                  </Link>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-            <CardContent className="pt-6">
-              <h3 className="text-xl font-bold mb-2">Upgrade para Premium</h3>
-              <p className="mb-4 opacity-90">
-                Acesse conteúdos exclusivos e recursos avançados
-              </p>
-              <Button variant="outline" className="bg-white text-blue-600 hover:bg-gray-100">
-                Saiba Mais
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
       </div>
+
+      {selectedConsultoria && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setSelectedConsultoria(null)}>
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-between items-start mb-4">
+              <h2 className="text-2xl font-bold">Detalhes da Consultoria</h2>
+              <button onClick={() => setSelectedConsultoria(null)} className="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-semibold text-gray-700 mb-1">Consultor</h3>
+                <p className="text-gray-900">{selectedConsultoria.consultor?.nome || 'Não definido'}</p>
+                <p className="text-sm text-gray-600">{selectedConsultoria.consultor?.email}</p>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-gray-700 mb-1">Status</h3>
+                <span className={`inline-block px-3 py-1 rounded-full text-sm ${
+                  selectedConsultoria.status === 'Em Andamento' ? 'bg-green-100 text-green-800' :
+                  selectedConsultoria.status === 'Pendente' ? 'bg-yellow-100 text-yellow-800' :
+                  'bg-gray-100 text-gray-800'
+                }`}>
+                  {selectedConsultoria.status}
+                </span>
+              </div>
+
+              {selectedConsultoria.descricao && (
+                <div>
+                  <h3 className="font-semibold text-gray-700 mb-1">Descrição da Solicitação</h3>
+                  <p className="text-gray-900 bg-gray-50 p-3 rounded">{selectedConsultoria.descricao}</p>
+                </div>
+              )}
+
+              {selectedConsultoria.link_reuniao && (
+                <div>
+                  <h3 className="font-semibold text-gray-700 mb-1">Link da Reunião</h3>
+                  <a href={selectedConsultoria.link_reuniao} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">
+                    {selectedConsultoria.link_reuniao}
+                  </a>
+                </div>
+              )}
+
+              <div>
+                <h3 className="font-semibold text-gray-700 mb-1">Data de Criação</h3>
+                <p className="text-gray-900">{new Date(selectedConsultoria.created_at).toLocaleString('pt-BR')}</p>
+              </div>
+
+              <div className="flex gap-2 pt-4">
+                <Button onClick={() => {
+                  setSelectedConsultoria(null);
+                  handleOpenChat(selectedConsultoria.id_consultoria);
+                }} className="flex-1">
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  Abrir Chat
+                </Button>
+                <Button variant="outline" onClick={() => setSelectedConsultoria(null)} className="flex-1">
+                  Fechar
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

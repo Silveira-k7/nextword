@@ -30,11 +30,6 @@ export function ConteudoEducativo() {
   const handleAcessarConteudo = async (conteudo: ConteudoEducativoType) => {
     if (!usuario) return;
 
-    if (conteudo.versao_acesso === 'Premium' && usuario.plano !== 'Premium') {
-      alert('Este conteúdo é exclusivo para assinantes Premium!');
-      return;
-    }
-
     try {
       await conteudoEducativoService.trackAccess(usuario.id_usuario, conteudo.id_conteudo);
       if (conteudo.url_acesso) {
@@ -67,23 +62,6 @@ export function ConteudoEducativo() {
           <p className="text-gray-600">Aprenda e desenvolva suas habilidades em gestão e marketing digital</p>
         </div>
 
-        {usuario?.plano === 'Gratuito' && (
-          <Card className="mb-8 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-            <CardContent className="py-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-xl font-bold mb-2">Upgrade para Premium</h3>
-                  <p className="opacity-90">
-                    Acesse todos os conteúdos exclusivos e materiais avançados
-                  </p>
-                </div>
-                <Button variant="outline" className="bg-white text-blue-600 hover:bg-gray-100">
-                  Saiba Mais
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
 
         <div className="mb-6 flex flex-wrap gap-2">
           {categorias.map((categoria) => (

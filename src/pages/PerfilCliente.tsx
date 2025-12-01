@@ -164,9 +164,6 @@ export function PerfilCliente() {
               <h2 className="text-lg font-semibold mb-4">Informações da Conta</h2>
               <div className="space-y-2 text-sm">
                 <p className="text-gray-600">
-                  <span className="font-medium">Plano:</span> {usuario?.plano}
-                </p>
-                <p className="text-gray-600">
                   <span className="font-medium">Membro desde:</span>{' '}
                   {usuario?.created_at ? new Date(usuario.created_at).toLocaleDateString('pt-BR') : 'N/A'}
                 </p>
